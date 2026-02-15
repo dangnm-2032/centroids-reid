@@ -18,12 +18,12 @@ from pytorch_lightning.utilities import AttributeDict, rank_zero_only
 from torch import tensor
 from tqdm import tqdm
 
-from config import cfg
-from losses.center_loss import CenterLoss
-from losses.triplet_loss import CrossEntropyLabelSmooth, TripletLoss
-from modelling.baseline import Baseline
-from solver import build_optimizer, build_scheduler
-from utils.reid_metric import R1_mAP
+from centroids_reid.config import cfg
+from centroids_reid.losses.center_loss import CenterLoss
+from centroids_reid.losses.triplet_loss import CrossEntropyLabelSmooth, TripletLoss
+from centroids_reid.modelling.baseline import Baseline
+from centroids_reid.solver import build_optimizer, build_scheduler
+from centroids_reid.utils.reid_metric import R1_mAP
 
 
 def weights_init_classifier(m):
@@ -60,8 +60,7 @@ class ModelBase(pl.LightningModule):
             if cfg.TEST.ONLY_TEST:
                 # To make sure that loaded hparams are overwritten by cfg we may have chnaged
                 hparams = {**kwargs, **cfg}
-        self.hparams = AttributeDict(hparams)
-        self.save_hyperparameters(self.hparams)
+        self.save_hyperparameters(hparams)
 
         if test_dataloader is not None:
             self.test_dataloader = test_dataloader
